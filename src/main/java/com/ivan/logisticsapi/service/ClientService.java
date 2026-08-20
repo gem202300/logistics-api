@@ -21,12 +21,12 @@ public class ClientService {
     public Client addClient(Client client){
         return clientRepository.save(client);
     }
-    public Client findClientByID(Long id){
+    public Client findClientById(Long id){
         Optional<Client> optionalClient = clientRepository.findById(id);
         return optionalClient.orElseThrow(NoSuchElementException::new);
     }
-    public void deleteClientByID(Long id){
-        Client client = findClientByID(id);
-        clientRepository.delete(client);
+    public void deleteClientById(Long id){
+        findClientById(id);
+        clientRepository.deleteById(id);
     }
 }

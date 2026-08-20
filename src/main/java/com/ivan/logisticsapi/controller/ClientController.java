@@ -24,14 +24,14 @@ public class ClientController {
     }
     @GetMapping("/{id}")
     public Client getClientById(@PathVariable Long id){
-        return clientService.findClientByID(id);
+        return clientService.findClientById(id);
     }
 
     @PutMapping("/{id}")
     public Client  updateClient(
             @PathVariable Long id,
             @Valid @RequestBody Client client){
-        Client tempClient = clientService.findClientByID(id);
+        Client tempClient = clientService.findClientById(id);
 
         tempClient.setName(client.getName());
         tempClient.setAddress(client.getAddress());
@@ -42,7 +42,7 @@ public class ClientController {
     }
     @DeleteMapping("/{id}")
     public void deleteClientById(@PathVariable Long id){
-        clientService.deleteClientByID(id);
+        clientService.deleteClientById(id);
     }
 
 
