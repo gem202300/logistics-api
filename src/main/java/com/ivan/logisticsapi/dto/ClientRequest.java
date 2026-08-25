@@ -1,18 +1,9 @@
-package com.ivan.logisticsapi.model;
+package com.ivan.logisticsapi.dto;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
-@Entity
-public class Client {
-    @Id
-
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class ClientRequest {
     @NotBlank
     private String name;
     @NotBlank
@@ -22,17 +13,12 @@ public class Client {
     private String phone;
     @NotBlank
     private String address;
-
-    public Client(){}
-
-    public Client(String name, String email, String phone, String address) {
+    public ClientRequest() {}
+    public ClientRequest(String name, String email, String phone, String address) {
         this.name = name;
         this.email = email;
         this.phone = phone;
         this.address = address;
-    }
-    public Long getId() {
-        return id;
     }
     public void setAddress(String address) {
         this.address = address;

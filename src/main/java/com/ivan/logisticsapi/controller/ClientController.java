@@ -1,6 +1,7 @@
 package com.ivan.logisticsapi.controller;
 
-import com.ivan.logisticsapi.model.Client;
+import com.ivan.logisticsapi.dto.ClientRequest;
+import com.ivan.logisticsapi.dto.ClientResponse;
 import com.ivan.logisticsapi.service.ClientService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
@@ -15,35 +16,31 @@ public class ClientController {
     }
 
     @PostMapping
-    public Client addClient(@Valid @RequestBody Client client){
+    public ClientResponse addClient(@Valid @RequestBody ClientRequest client){
        return clientService.addClient(client);
     }
     @GetMapping
-    public List<Client> getClients(){
+    public List<ClientResponse> getClients(){
         return clientService.getClients();
     }
     @GetMapping("/{id}")
-    public Client getClientById(@PathVariable Long id){
+    public ClientResponse getClientById(@PathVariable Long id){
         return clientService.findClientById(id);
     }
 
     @PutMapping("/{id}")
-    public Client  updateClient(
+    public ClientResponse updateClient(
             @PathVariable Long id,
-            @Valid @RequestBody Client client){
-        Client tempClient = clientService.findClientById(id);
-
-        tempClient.setName(client.getName());
-        tempClient.setAddress(client.getAddress());
-        tempClient.setEmail(client.getEmail());
-        tempClient.setPhone(client.getPhone());
-
-        return clientService.addClient(tempClient);
+            @Valid @RequestBody ClientRequest client){
+        return clientService.updateClientById(id,client);
     }
     @DeleteMapping("/{id}")
     public void deleteClientById(@PathVariable Long id){
         clientService.deleteClientById(id);
     }
-
+    @GetMapping("/email/{email}")
+    public ClientResponse getClientByEmail(@PathVariable String email){
+        return clientService.findClientByEmail(email);
+    }
 
 }
