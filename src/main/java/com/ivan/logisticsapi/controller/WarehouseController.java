@@ -1,5 +1,7 @@
 package com.ivan.logisticsapi.controller;
 
+import com.ivan.logisticsapi.dto.WarehouseRequest;
+import com.ivan.logisticsapi.dto.WarehouseResponse;
 import com.ivan.logisticsapi.model.Warehouse;
 import com.ivan.logisticsapi.service.WarehouseService;
 import jakarta.validation.Valid;
@@ -17,31 +19,27 @@ public class WarehouseController {
     }
 
     @PostMapping
-    public Warehouse addWarehouse(@Valid @RequestBody Warehouse warehouse){
-        return warehouseService.addWarehouse(warehouse);
+    public WarehouseResponse addWarehouse(@Valid @RequestBody WarehouseRequest warehouseRequest){
+        return warehouseService.addWarehouse(warehouseRequest);
     }
     @GetMapping
-    public List<Warehouse> getWarehouses(){
+    public List<WarehouseResponse> getWarehouses(){
         return warehouseService.getWarehouses();
     }
+
     @GetMapping("/{id}")
-    public Warehouse getWarehouseById(@PathVariable Long id){
+    public WarehouseResponse getWarehouseById(@PathVariable Long id){
         return warehouseService.findWarehouseById(id);
     }
 
     @PutMapping("/{id}")
-    public Warehouse  updateWarehouse(
+    public WarehouseResponse updateWarehouse(
             @PathVariable Long id,
-            @Valid @RequestBody Warehouse warehouse){
-        Warehouse tempWarehouse = warehouseService.findWarehouseById(id);
+            @Valid @RequestBody WarehouseRequest warehouseRequest) {
 
-        tempWarehouse.setName(warehouse.getName());
-        tempWarehouse.setAddress(warehouse.getAddress());
-        tempWarehouse.setCapacity(warehouse.getCapacity());
-        tempWarehouse.setCity(warehouse.getCity());
-
-        return warehouseService.addWarehouse(tempWarehouse);
+        return warehouseService.updateWarehouseById(id, warehouseRequest);
     }
+
     @DeleteMapping("/{id}")
     public void deleteWarehouseById(@PathVariable Long id){
         warehouseService.deleteWarehouseById(id);

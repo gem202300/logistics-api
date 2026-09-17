@@ -1,5 +1,9 @@
 package com.ivan.logisticsapi.service;
 
+import com.ivan.logisticsapi.dto.ClientResponse;
+import com.ivan.logisticsapi.dto.WarehouseRequest;
+import com.ivan.logisticsapi.dto.WarehouseResponse;
+import com.ivan.logisticsapi.model.Client;
 import com.ivan.logisticsapi.model.Warehouse;
 import com.ivan.logisticsapi.repository.WarehouseRepository;
 import org.springframework.stereotype.Service;
@@ -16,15 +20,51 @@ public class WarehouseService {
     public WarehouseService(WarehouseRepository warehouseRepository) {
         this.warehouseRepository = warehouseRepository;
     }
-    public List<Warehouse> getWarehouses(){
-        return warehouseRepository.findAll();
+    public List<WarehouseResponse> getWarehouses(){
+        return warehouseRepository.findAll()
+                .stream()
+                .map(this::toResponse)
+                .toList();
     }
-    public Warehouse findWarehouseById(Long id){
-        Optional<Warehouse> warehouseOprtional = warehouseRepository.findById(id);
-        return warehouseOprtional.orElseThrow(NoSuchElementException::new);
+    private WarehouseResponse toResponse(Warehouse warehouse) {
+        return new WarehouseResponse(
+                warehouse.getId(),
+                warehouse.getName(),
+                warehouse.getAddress(),
+                warehouse.getCity(),
+                warehouse.getCapacity()
+        );
     }
-    public Warehouse addWarehouse(Warehouse warehouse){
-       return warehouseRepository.save(warehouse);
+    public WarehouseResponse findWarehouseById(Long id){
+        Warehouse warehouse = warehouseRepository
+                .findById(id).orElseThrow(NoSuchElementException::new);
+        return toResponse(warehouse);
+    }
+    public WarehouseResponse addWarehouse(WarehouseRequest warehouseRequest){
+        Warehouse warehouse = new Warehouse(
+                warehouseRequest.getName(),
+                warehouseRequest.getAddress(),
+                warehouseRequest.getCity(),
+                warehouseRequest.getCapacity()
+        );
+        Warehouse savedWarehouse = warehouseRepository.save(warehouse);
+       return toResponse(savedWarehouse);
+    }
+    private Warehouse getWarehouseEntityById(Long id) {
+        return warehouseRepository.findById(id)
+                .orElseThrow(NoSuchElementException::new);
+    }
+
+    public WarehouseResponse updateWarehouseById(Long id, WarehouseRequest warehouseRequest) {
+        Warehouse warehouse = getWarehouseEntityById(id);
+
+        warehouse.setName(warehouseRequest.getName());
+        warehouse.setAddress(warehouseRequest.getAddress());
+        warehouse.setCity(warehouseRequest.getCity());
+        warehouse.setCapacity(warehouseRequest.getCapacity());
+
+        Warehouse savedWarehouse = warehouseRepository.save(warehouse);
+        return toResponse(savedWarehouse);
     }
     public void deleteWarehouseById(Long id){
         findWarehouseById(id);
