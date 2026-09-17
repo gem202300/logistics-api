@@ -27,7 +27,9 @@ public class Warehouse {
         this.capacity = capacity;
     }
     public Warehouse() {}
-
+    public Long getId() {
+        return id;
+    }
     public void setName(String name) {
         this.name = name;
     }

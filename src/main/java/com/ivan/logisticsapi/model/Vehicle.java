@@ -27,7 +27,9 @@ public class Vehicle {
         this.model = model;
         this.capacity = capacity;
     }
-
+    public Long getId() {
+        return id;
+    }
     public String getBrand() {
         return brand;
     }

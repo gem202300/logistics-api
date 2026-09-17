@@ -37,7 +37,9 @@ public class Shipment {
         this.vehicle = vehicle;
     }
     public Shipment(){}
-
+    public Long getId() {
+        return id;
+    }
     public Client getClient() {
         return client;
     }
