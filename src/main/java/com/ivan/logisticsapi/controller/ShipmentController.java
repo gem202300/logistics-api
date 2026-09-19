@@ -2,8 +2,10 @@ package com.ivan.logisticsapi.controller;
 
 import com.ivan.logisticsapi.dto.ShipmentRequest;
 import com.ivan.logisticsapi.dto.ShipmentResponse;
+import com.ivan.logisticsapi.dto.ShipmentStatusRequest;
 import com.ivan.logisticsapi.service.ShipmentService;
 import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -46,8 +48,9 @@ public class ShipmentController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteShipmentById(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteShipmentById(@PathVariable Long id) {
         shipmentService.deleteShipmentById(id);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/tracking/{trackingNumber}")
@@ -55,5 +58,11 @@ public class ShipmentController {
             @PathVariable String trackingNumber
     ) {
         return shipmentService.findShipmentByTrackingNumber(trackingNumber);
+    }
+    @PatchMapping("/{id}/status")
+    public ShipmentResponse updateStatus(
+            @PathVariable Long id,
+            @RequestBody ShipmentStatusRequest request){
+        return shipmentService.updateStatus(id, request.getStatus());
     }
 }

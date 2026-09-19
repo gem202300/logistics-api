@@ -37,7 +37,7 @@ public class WarehouseService {
     }
     public WarehouseResponse findWarehouseById(Long id){
         Warehouse warehouse = warehouseRepository
-                .findById(id).orElseThrow(NoSuchElementException::new);
+                .findById(id).orElseThrow(()-> new NoSuchElementException("Warehouse not found with id: "+ id));
         return toResponse(warehouse);
     }
     public WarehouseResponse addWarehouse(WarehouseRequest warehouseRequest){
@@ -52,7 +52,7 @@ public class WarehouseService {
     }
     private Warehouse getWarehouseEntityById(Long id) {
         return warehouseRepository.findById(id)
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow(()-> new NoSuchElementException("Warehouse not found with id: "+ id));
     }
 
     public WarehouseResponse updateWarehouseById(Long id, WarehouseRequest warehouseRequest) {

@@ -2,6 +2,7 @@ package com.ivan.logisticsapi.service;
 
 import com.ivan.logisticsapi.dto.ShipmentRequest;
 import com.ivan.logisticsapi.dto.ShipmentResponse;
+import com.ivan.logisticsapi.enums.ShipmentStatus;
 import com.ivan.logisticsapi.model.Client;
 import com.ivan.logisticsapi.model.Shipment;
 import com.ivan.logisticsapi.model.Vehicle;
@@ -50,18 +51,18 @@ public class ShipmentService {
     public ShipmentResponse addShipment(ShipmentRequest shipmentRequest) {
 
         Client client = clientRepository.findById(shipmentRequest.getClientId())
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow(()-> new NoSuchElementException("Client with id " + shipmentRequest.getClientId() + " not found"));
 
         Warehouse warehouse = warehouseRepository.findById(shipmentRequest.getWarehouseId())
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow(()-> new NoSuchElementException("Warehouse not found with id: "+ shipmentRequest.getWarehouseId()));
 
         Vehicle vehicle = vehicleRepository.findById(shipmentRequest.getVehicleId())
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow(()-> new NoSuchElementException("Vehicle not found with id: "+ shipmentRequest.getVehicleId()));
 
         Shipment shipment = new Shipment(
                 shipmentRequest.getTrackingNumber(),
                 shipmentRequest.getDescription(),
-                shipmentRequest.getStatus(),
+                ShipmentStatus.CREATED,
                 client,
                 warehouse,
                 vehicle
@@ -79,17 +80,16 @@ public class ShipmentService {
         Shipment shipment = getShipmentEntityById(id);
 
         Client client = clientRepository.findById(shipmentRequest.getClientId())
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow(() -> new NoSuchElementException("Client not found  with id: "+ shipmentRequest.getClientId()));
 
         Warehouse warehouse = warehouseRepository.findById(shipmentRequest.getWarehouseId())
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow(()-> new NoSuchElementException("Warehouse not found  with id: "+ shipmentRequest.getWarehouseId()));
 
         Vehicle vehicle = vehicleRepository.findById(shipmentRequest.getVehicleId())
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow(()-> new NoSuchElementException("Vehicle not found  with id: "+ shipmentRequest.getVehicleId()));
 
         shipment.setTrackingNumber(shipmentRequest.getTrackingNumber());
         shipment.setDescription(shipmentRequest.getDescription());
-        shipment.setStatus(shipmentRequest.getStatus());
         shipment.setClient(client);
         shipment.setWarehouse(warehouse);
         shipment.setVehicle(vehicle);
@@ -106,14 +106,36 @@ public class ShipmentService {
 
     public ShipmentResponse findShipmentByTrackingNumber(String trackingNumber) {
         Shipment shipment = shipmentRepository.findByTrackingNumber(trackingNumber)
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow(()-> new NoSuchElementException("Shipment not found with tracking number: "+ trackingNumber) );
 
         return toResponse(shipment);
     }
 
     private Shipment getShipmentEntityById(Long id) {
         return shipmentRepository.findById(id)
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow(()-> new NoSuchElementException("Shipment not found with id: "+ id));
+    }
+    public ShipmentResponse updateStatus(Long id, ShipmentStatus newStatus) {
+        Shipment shipment = getShipmentEntityById(id);
+        ShipmentStatus current = shipment.getStatus();
+
+        if (current == ShipmentStatus.CREATED) {
+             if (newStatus != ShipmentStatus.IN_TRANSIT && newStatus != ShipmentStatus.CANCELLED) {
+                throw new IllegalStateException("Cannot change status from CREATED to " + newStatus);
+            }
+        }
+        else if (current == ShipmentStatus.IN_TRANSIT) {
+           if (newStatus != ShipmentStatus.DELIVERED && newStatus != ShipmentStatus.CANCELLED) {
+                throw new IllegalStateException("Cannot change status from IN_TRANSIT to " + newStatus);
+            }
+        }
+        else {
+            throw new IllegalStateException("Cannot change status from " + current);
+        }
+
+        shipment.setStatus(newStatus);
+        shipmentRepository.save(shipment);
+        return toResponse(shipment);
     }
 
     private ShipmentResponse toResponse(Shipment shipment) {

@@ -44,7 +44,7 @@ public class ClientService {
     }
     public ClientResponse findClientById(Long id){
         Client client = clientRepository.findById(id)
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow(()-> new NoSuchElementException("Client with id " + id + " not found"));
 
         return toResponse(client);
     }
@@ -54,13 +54,13 @@ public class ClientService {
     }
     public ClientResponse findClientByEmail(String email){
         Client client = clientRepository.findByEmail(email)
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow(()-> new NoSuchElementException("Client with email: " + email + " not found"));
 
         return toResponse(client);
     }
     private Client getClientEntityById(Long id){
         Client client = clientRepository.findById(id)
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow(()-> new NoSuchElementException("Client with id " + id + " not found"));
         return client;
     }
     public ClientResponse updateClientById(Long id, ClientRequest clientRequest){

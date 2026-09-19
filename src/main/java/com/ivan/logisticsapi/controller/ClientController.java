@@ -4,6 +4,8 @@ import com.ivan.logisticsapi.dto.ClientRequest;
 import com.ivan.logisticsapi.dto.ClientResponse;
 import com.ivan.logisticsapi.service.ClientService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -35,8 +37,9 @@ public class ClientController {
         return clientService.updateClientById(id,client);
     }
     @DeleteMapping("/{id}")
-    public void deleteClientById(@PathVariable Long id){
+    public ResponseEntity<Void> deleteClientById(@PathVariable Long id) {
         clientService.deleteClientById(id);
+        return ResponseEntity.noContent().build();
     }
     @GetMapping("/email/{email}")
     public ClientResponse getClientByEmail(@PathVariable String email){

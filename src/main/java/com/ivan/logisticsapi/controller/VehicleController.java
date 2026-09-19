@@ -4,6 +4,7 @@ import com.ivan.logisticsapi.dto.VehicleRequest;
 import com.ivan.logisticsapi.dto.VehicleResponse;
 import com.ivan.logisticsapi.service.VehicleService;
 import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -41,7 +42,8 @@ public class VehicleController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteVehicleById(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteVehicleById(@PathVariable Long id) {
         vehicleService.deleteVehicleById(id);
+        return ResponseEntity.noContent().build();
     }
 }

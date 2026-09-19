@@ -61,7 +61,7 @@ public class VehicleService {
 
     private Vehicle getVehicleEntityById(Long id) {
         return vehicleRepository.findById(id)
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow(()-> new NoSuchElementException("Vehicle not found with id: "+ id));
     }
 
     private VehicleResponse toResponse(Vehicle vehicle) {

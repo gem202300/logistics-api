@@ -5,6 +5,7 @@ import com.ivan.logisticsapi.dto.WarehouseResponse;
 import com.ivan.logisticsapi.model.Warehouse;
 import com.ivan.logisticsapi.service.WarehouseService;
 import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -41,8 +42,9 @@ public class WarehouseController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteWarehouseById(@PathVariable Long id){
+    public ResponseEntity<Void> deleteWarehouseById(@PathVariable Long id){
         warehouseService.deleteWarehouseById(id);
+        return ResponseEntity.noContent().build();
     }
 
 }
