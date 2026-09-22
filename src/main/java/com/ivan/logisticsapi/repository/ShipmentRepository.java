@@ -2,9 +2,9 @@ package com.ivan.logisticsapi.repository;
 
 import com.ivan.logisticsapi.enums.ShipmentStatus;
 import com.ivan.logisticsapi.model.Shipment;
+import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
-
-import java.util.List;
+import org.springframework.data.domain.Pageable;
 import java.util.Optional;
 
 public interface ShipmentRepository extends JpaRepository<Shipment, Long> {
@@ -16,6 +16,6 @@ public interface ShipmentRepository extends JpaRepository<Shipment, Long> {
 
     boolean existsByVehicleId(Long vehicleId);
 
-    List<Shipment> findByStatus(ShipmentStatus status);
+    Page<Shipment> findByStatus(ShipmentStatus status, Pageable pageable);
 
 }

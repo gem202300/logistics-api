@@ -8,8 +8,8 @@ import com.ivan.logisticsapi.service.ShipmentService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 @RestController
 @RequestMapping("/api/shipments")
@@ -29,8 +29,8 @@ public class ShipmentController {
     }
 
     @GetMapping
-    public List<ShipmentResponse> getShipments(@RequestParam(required = false) ShipmentStatus status) {
-        return shipmentService.getShipments(status);
+    public Page<ShipmentResponse> getShipments(@RequestParam(required = false) ShipmentStatus status, Pageable pageable) {
+        return shipmentService.getShipments(status,pageable);
     }
 
     @GetMapping("/{id}")

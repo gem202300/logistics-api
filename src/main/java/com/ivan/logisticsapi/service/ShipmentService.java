@@ -12,8 +12,8 @@ import com.ivan.logisticsapi.repository.ShipmentRepository;
 import com.ivan.logisticsapi.repository.VehicleRepository;
 import com.ivan.logisticsapi.repository.WarehouseRepository;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import java.util.NoSuchElementException;
 
 @Service
@@ -36,16 +36,16 @@ public class ShipmentService {
         this.vehicleRepository = vehicleRepository;
     }
 
-    public List<ShipmentResponse> getShipments(ShipmentStatus status) {
-        if (status == null){
-            return shipmentRepository.findAll()
-                    .stream()
-                    .map(this::toResponse)
-                    .toList();
-        }else {
-            return shipmentRepository.findByStatus(status).stream().map(this::toResponse).toList();
+    public Page<ShipmentResponse> getShipments(ShipmentStatus status, Pageable pageable) {
+        Page<Shipment> page;
+
+        if (status == null) {
+            page = shipmentRepository.findAll(pageable);
+        } else {
+            page = shipmentRepository.findByStatus(status, pageable);
         }
 
+        return page.map(this::toResponse);
     }
 
     public ShipmentResponse findShipmentById(Long id) {
