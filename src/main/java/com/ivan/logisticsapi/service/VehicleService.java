@@ -3,6 +3,7 @@ package com.ivan.logisticsapi.service;
 import com.ivan.logisticsapi.dto.VehicleRequest;
 import com.ivan.logisticsapi.dto.VehicleResponse;
 import com.ivan.logisticsapi.model.Vehicle;
+import com.ivan.logisticsapi.repository.ShipmentRepository;
 import com.ivan.logisticsapi.repository.VehicleRepository;
 import org.springframework.stereotype.Service;
 
@@ -13,9 +14,11 @@ import java.util.NoSuchElementException;
 public class VehicleService {
 
     private final VehicleRepository vehicleRepository;
-
-    public VehicleService(VehicleRepository vehicleRepository) {
+    private final ShipmentRepository shipmentRepository;
+    public VehicleService(VehicleRepository vehicleRepository, ShipmentRepository shipmentRepository) {
         this.vehicleRepository = vehicleRepository;
+        this.shipmentRepository = shipmentRepository;
+
     }
 
     public List<VehicleResponse> getVehicles() {
@@ -55,6 +58,9 @@ public class VehicleService {
     }
 
     public void deleteVehicleById(Long id) {
+        if(shipmentRepository.existsByVehicleId(id)){
+            throw new IllegalStateException("Cannot delete vehicle with id " + id + " because it has related shipments");
+        }
         getVehicleEntityById(id);
         vehicleRepository.deleteById(id);
     }

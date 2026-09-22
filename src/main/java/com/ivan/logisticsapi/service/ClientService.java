@@ -4,6 +4,7 @@ import com.ivan.logisticsapi.dto.ClientRequest;
 import com.ivan.logisticsapi.dto.ClientResponse;
 import com.ivan.logisticsapi.model.Client;
 import com.ivan.logisticsapi.repository.ClientRepository;
+import com.ivan.logisticsapi.repository.ShipmentRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,9 +13,11 @@ import java.util.NoSuchElementException;
 @Service
 public class ClientService {
     private final ClientRepository clientRepository;
+    private final ShipmentRepository shipmentRepository;
 
-    public ClientService(ClientRepository clientRepository) {
+    public ClientService(ClientRepository clientRepository, ShipmentRepository shipmentRepository) {
         this.clientRepository = clientRepository;
+        this.shipmentRepository = shipmentRepository;
     }
     public List<ClientResponse> getClients(){
         return clientRepository.findAll()
@@ -49,6 +52,9 @@ public class ClientService {
         return toResponse(client);
     }
     public void deleteClientById(Long id){
+        if(shipmentRepository.existsByClientId(id)){
+            throw new IllegalStateException("Cannot delete client with id " + id + " because it has related shipments");
+        }
         findClientById(id);
         clientRepository.deleteById(id);
     }

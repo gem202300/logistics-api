@@ -5,6 +5,7 @@ import com.ivan.logisticsapi.dto.WarehouseRequest;
 import com.ivan.logisticsapi.dto.WarehouseResponse;
 import com.ivan.logisticsapi.model.Client;
 import com.ivan.logisticsapi.model.Warehouse;
+import com.ivan.logisticsapi.repository.ShipmentRepository;
 import com.ivan.logisticsapi.repository.WarehouseRepository;
 import org.springframework.stereotype.Service;
 
@@ -16,10 +17,13 @@ import java.util.Optional;
 public class WarehouseService {
 
     private final WarehouseRepository warehouseRepository;
+    private final ShipmentRepository shipmentRepository;
 
-    public WarehouseService(WarehouseRepository warehouseRepository) {
+    public WarehouseService(WarehouseRepository warehouseRepository, ShipmentRepository shipmentRepository) {
         this.warehouseRepository = warehouseRepository;
+        this.shipmentRepository = shipmentRepository;
     }
+
     public List<WarehouseResponse> getWarehouses(){
         return warehouseRepository.findAll()
                 .stream()
@@ -67,6 +71,9 @@ public class WarehouseService {
         return toResponse(savedWarehouse);
     }
     public void deleteWarehouseById(Long id){
+        if(shipmentRepository.existsByWarehouseId(id)){
+            throw new IllegalStateException("Cannot delete warehouse with id " + id + " because it has related shipments");
+        }
         findWarehouseById(id);
         warehouseRepository.deleteById(id);
     }
