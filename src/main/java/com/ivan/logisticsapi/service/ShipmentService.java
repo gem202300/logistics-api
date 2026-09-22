@@ -36,11 +36,16 @@ public class ShipmentService {
         this.vehicleRepository = vehicleRepository;
     }
 
-    public List<ShipmentResponse> getShipments() {
-        return shipmentRepository.findAll()
-                .stream()
-                .map(this::toResponse)
-                .toList();
+    public List<ShipmentResponse> getShipments(ShipmentStatus status) {
+        if (status == null){
+            return shipmentRepository.findAll()
+                    .stream()
+                    .map(this::toResponse)
+                    .toList();
+        }else {
+            return shipmentRepository.findByStatus(status).stream().map(this::toResponse).toList();
+        }
+
     }
 
     public ShipmentResponse findShipmentById(Long id) {

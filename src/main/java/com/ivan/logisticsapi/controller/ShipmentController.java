@@ -3,6 +3,7 @@ package com.ivan.logisticsapi.controller;
 import com.ivan.logisticsapi.dto.ShipmentRequest;
 import com.ivan.logisticsapi.dto.ShipmentResponse;
 import com.ivan.logisticsapi.dto.ShipmentStatusRequest;
+import com.ivan.logisticsapi.enums.ShipmentStatus;
 import com.ivan.logisticsapi.service.ShipmentService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -28,8 +29,8 @@ public class ShipmentController {
     }
 
     @GetMapping
-    public List<ShipmentResponse> getShipments() {
-        return shipmentService.getShipments();
+    public List<ShipmentResponse> getShipments(@RequestParam(required = false) ShipmentStatus status) {
+        return shipmentService.getShipments(status);
     }
 
     @GetMapping("/{id}")
