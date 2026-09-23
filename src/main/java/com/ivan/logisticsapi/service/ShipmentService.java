@@ -84,29 +84,39 @@ public class ShipmentService {
     ) {
         Shipment shipment = getShipmentEntityById(id);
 
-        Client client = clientRepository.findById(shipmentRequest.getClientId())
-                .orElseThrow(() -> new NoSuchElementException("Client not found  with id: "+ shipmentRequest.getClientId()));
+        if (shipment.getStatus() == ShipmentStatus.DELIVERED || shipment.getStatus() == ShipmentStatus.CANCELLED) {
+            throw new IllegalStateException("Shipment with id " + shipment.getId() + " is already delivered or cancelled");
+        } else {
 
-        Warehouse warehouse = warehouseRepository.findById(shipmentRequest.getWarehouseId())
-                .orElseThrow(()-> new NoSuchElementException("Warehouse not found  with id: "+ shipmentRequest.getWarehouseId()));
 
-        Vehicle vehicle = vehicleRepository.findById(shipmentRequest.getVehicleId())
-                .orElseThrow(()-> new NoSuchElementException("Vehicle not found  with id: "+ shipmentRequest.getVehicleId()));
+            Client client = clientRepository.findById(shipmentRequest.getClientId())
+                    .orElseThrow(() -> new NoSuchElementException("Client not found  with id: " + shipmentRequest.getClientId()));
 
-        shipment.setTrackingNumber(shipmentRequest.getTrackingNumber());
-        shipment.setDescription(shipmentRequest.getDescription());
-        shipment.setClient(client);
-        shipment.setWarehouse(warehouse);
-        shipment.setVehicle(vehicle);
+            Warehouse warehouse = warehouseRepository.findById(shipmentRequest.getWarehouseId())
+                    .orElseThrow(() -> new NoSuchElementException("Warehouse not found  with id: " + shipmentRequest.getWarehouseId()));
 
-        Shipment savedShipment = shipmentRepository.save(shipment);
+            Vehicle vehicle = vehicleRepository.findById(shipmentRequest.getVehicleId())
+                    .orElseThrow(() -> new NoSuchElementException("Vehicle not found  with id: " + shipmentRequest.getVehicleId()));
 
-        return toResponse(savedShipment);
+            shipment.setTrackingNumber(shipmentRequest.getTrackingNumber());
+            shipment.setDescription(shipmentRequest.getDescription());
+            shipment.setClient(client);
+            shipment.setWarehouse(warehouse);
+            shipment.setVehicle(vehicle);
+
+            Shipment savedShipment = shipmentRepository.save(shipment);
+
+            return toResponse(savedShipment);
+        }
     }
 
     public void deleteShipmentById(Long id) {
-        getShipmentEntityById(id);
-        shipmentRepository.deleteById(id);
+        Shipment shipment = getShipmentEntityById(id);
+        if (shipment.getStatus() == ShipmentStatus.DELIVERED || shipment.getStatus() == ShipmentStatus.CANCELLED) {
+            throw new IllegalStateException("Shipment with id " + shipment.getId() + " is already delivered or cancelled and you can't delete this shipment");
+        } else {
+            shipmentRepository.deleteById(id);
+        }
     }
 
     public ShipmentResponse findShipmentByTrackingNumber(String trackingNumber) {

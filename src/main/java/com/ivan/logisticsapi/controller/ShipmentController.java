@@ -63,7 +63,7 @@ public class ShipmentController {
     @PatchMapping("/{id}/status")
     public ShipmentResponse updateStatus(
             @PathVariable Long id,
-            @RequestBody ShipmentStatusRequest request){
+            @Valid @RequestBody ShipmentStatusRequest request){
         return shipmentService.updateStatus(id, request.getStatus());
     }
 }

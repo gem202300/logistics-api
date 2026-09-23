@@ -5,12 +5,14 @@ import jakarta.validation.constraints.NotNull;
 
 public class ShipmentStatusRequest {
     @NotNull
-    ShipmentStatus status;
+    private ShipmentStatus status;
     public ShipmentStatusRequest() {}
 
 
     public ShipmentStatus getStatus() {
         return status;
     }
-    public void setStatus(ShipmentStatus status) {}
+    public void setStatus(ShipmentStatus status) {
+        this.status = status;
+    }
 }

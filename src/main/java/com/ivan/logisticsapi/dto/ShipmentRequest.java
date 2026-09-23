@@ -1,17 +1,18 @@
 package com.ivan.logisticsapi.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 public class ShipmentRequest {
     @NotBlank
     private String trackingNumber;
     @NotBlank
     private String description;
-
+    @NotNull
     private Long clientId;
-
+    @NotNull
     private Long warehouseId;
-
+    @NotNull
     private Long vehicleId;
 
     public  ShipmentRequest() {

@@ -1,7 +1,6 @@
 package com.ivan.logisticsapi.dto;
 
 import com.ivan.logisticsapi.enums.ShipmentStatus;
-import com.ivan.logisticsapi.model.Shipment;
 
 public class ShipmentResponse {
     private Long id;
